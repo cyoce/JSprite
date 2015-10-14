@@ -1,13 +1,3 @@
-var Sprite = function () {
-  
-};
-
-Object.defineProperty (Sprite,'Stage',{
-  get:function () {
-    
-  },
-  set:function () {
-    
-  }
-});
-v
+document.body.innerHTML =
+"<script type='text/javascript' src='Program.js'></script>"
++ document.body.innerHTML;
