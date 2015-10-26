@@ -1,5 +1,7 @@
 JSprite.frame = 'viewer';
-var Sprite1 = JSprite(function (v) {
-  this.foo = v;
-})
-var s1 = new Sprite1('bar');
+var Platypus = JSprite(function (name,x,y) {
+  this.goto(x || 0, y || 0)
+  this.name = name;
+});
+var platy = new Platypus('Patty',0,0);
+//JSprite.canvas.add(platy.raw);

@@ -1,6 +1,4 @@
 var JSprite = function jsp (init,img) {
-  if(!fabric) throw new ReferenceError('Fabric.js is not here');
-  if(!jsp.canvas) throw new ReferenceError('No canvas selected');
   function proto (obj,name,val) {
     obj.prototype[name] = val;
   }
@@ -10,14 +8,14 @@ var JSprite = function jsp (init,img) {
   function id (ref) {
     return document.getElementById(ref);
   }
-  var out = function self () {
+  var out = function self () { //constructor function for sprite object
     this.rawx = 0;
     this.rawy = 0;
-    this.img = img || 'platypus';
+    this.img = img || 'tinyplatypus';
     self.img = this.img;
+    this.raw = new fabric.Image(id(this.img));
     self.init.apply(this, arguments);
     self.clones.push(this);
-    this.raw = new fabric.Image(id(this.img));
     jsp.canvas.add(this.raw);
   };
   prop(out.prototype,'x',{
@@ -26,7 +24,8 @@ var JSprite = function jsp (init,img) {
     },
     set:function (val) {
       this.rawx = val;
-      if(this.raw) this.raw.set('left', v + jsp.canvas.width/2);
+      if(this.raw) this.raw.set('left',jsp.canvas.width/2 + (val - this.raw.width * 0.5));
+      jsp.canvas.renderAll();
     }
   });
   prop(out.prototype,'y',{
@@ -35,7 +34,8 @@ var JSprite = function jsp (init,img) {
     },
     set:function (val) {
       this.rawy = val;
-      if(this.raw) this.raw.set('top', val + jsp.canvas.height/2);
+      if(this.raw) this.raw.set('top',jsp.canvas.height/2 - (val + this.raw.height * 0.5));
+      jsp.canvas.renderAll();
     }
   });
   out.init   = init;
@@ -51,6 +51,9 @@ var JSprite = function jsp (init,img) {
     this.x = x;
     this.y = y;
   });
+  proto(out,'add',function () {
+    jsp.canvas.add(this.raw);
+  })
   return out;
 }
 Object.defineProperty(JSprite,'frame',{
