@@ -46,7 +46,7 @@ var JSprite = function jsp (init,img) {
       return this.rawangle;
     },
     set: function (val) {
-      this.rawangle = (360 + val) % 360;
+      this.rawangle = mod(val,360);
       this.raw.set('angle',val);
       jsp.render;
     }
@@ -86,7 +86,6 @@ JSprite.requestRender = function () {
     JSprite.canvas.renderAll();
   },0);
 };
-JSprite.requestRender()
 JSprite.math = {
   deg:  radians => radians * 180 / Math.PI,
   rad:  degrees => degrees * Math.PI / 180,
