@@ -19,14 +19,23 @@ var JSprite = function jsp (init,img) {
     self.clones.push(this);
     jsp.frame.add(this.raw);
   };
+  prop(out.prototype,'image',{
+    get:function () {
+      return this.img;
+    },
+    set:function (val) {
+      this.img = val;
+      this.raw = new fabric.Image(id(this.img));
+    }
+  });
   prop(out.prototype,'x',{
     get:function () {
       return this.rawx;
     },
     set:function (val) {
       this.rawx = val;
-      var newx = this.raw.width/2
-      if(this.raw) this.raw.set('left',jsp.frame.width/2 + (val - newx));
+      var relx = this.raw.width * 0;
+      if(this.raw) this.raw.set('left',jsp.frame.width/2 + (val - relx));
       jsp.render;
     }
   });
@@ -36,8 +45,8 @@ var JSprite = function jsp (init,img) {
     },
     set:function (val) {
       this.rawy = val;
-      var newy = this.raw.height / 2;
-      if(this.raw) this.raw.set('top',jsp.frame.height/2 - (val + newy));
+      var rely = this.raw.height * 0;
+      if(this.raw) this.raw.set('top',jsp.frame.height/2 - (val + rely));
       jsp.render;
     }
   });
@@ -46,7 +55,7 @@ var JSprite = function jsp (init,img) {
       return this.rawangle;
     },
     set: function (val) {
-      this.rawangle = mod(val,360);
+      this.rawangle = math.mod(val,360);
       this.raw.set('angle',val);
       jsp.render;
     }
