@@ -75,9 +75,18 @@ Object.defineProperty(JSprite,'frame',{
 });
 Object.defineProperty(JSprite,'render',{
   get:function () {
-    JSprite.frame.renderAll();
+    JSprite.requestRender();
   }
 });
+JSprite.pending = false;
+JSprite.requestRender = function () {
+  if(JSprite.pending) clearTimeout(JSprite.pending);
+  JSprite.pending = setTimeout(function () {
+    JSprite.pending = false;
+    JSprite.canvas.renderAll();
+  },0);
+};
+JSprite.requestRender()
 JSprite.math = {
   deg:  radians => radians * 180 / Math.PI,
   rad:  degrees => degrees * Math.PI / 180,
