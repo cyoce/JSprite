@@ -63,7 +63,7 @@ var JSprite = function jsp (a,b,c) {
         top:     this.raw.getTop(),
         angle:   this.raw.getAngle()
       });
-      jsp.canvas.add(this.raw);
+      this.add();
       this.updatepos();
       jsp.render;
     }
@@ -86,9 +86,8 @@ var JSprite = function jsp (a,b,c) {
     },
     set:function (val) {
       this.rawy = val;
-      var rely = math.cos(90-this.angle) * this.raw.height * 0.5;
       if(typeof this.raw !== 'undefined'){
-        this.raw.set('top',jsp.frame.height/2 - (val + rely));
+        this.raw.set('top',jsp.frame.height/2 - val);
       }
       jsp.render;
     }
@@ -108,13 +107,28 @@ var JSprite = function jsp (a,b,c) {
   out.clones = [];
   proto(out,'goto',function (a,b) {
     var x,y;
-    if(a.x !== undefined){
+    if(typeof a.x !== 'undefined'){
       x = a.x, y = a.y;
     } else {
       x = a, y = b;
     }
     this.x = x;
     this.y = y;
+    return this;
+  });
+  proto(out,'point',function (a,b){
+    var x,y;
+    if (typeof a === 'object'){
+      x = a.x;
+      y = a.y;
+    } else if (typeof b === 'number'){
+      x = a;
+      y = b;
+    } else {
+      this.angle = a;
+      return this;
+    }
+    return this;
   });
   proto(out,'add',function () {
     jsp.frame.add(this.raw);
