@@ -1,4 +1,26 @@
-var JSprite = function jsp (init,img) {
+var JSprite = function jsp (a,b,c) {
+  var init = function (x,y){
+    this.goto(x,y);
+  };
+  var update = function (t){
+
+  };
+  var img = '';
+  if (typeof a === 'object'){
+    if ('init'   in a) init = a.init;
+    if ('update' in a) update = a.update;
+    if ('image'  in a) img = a.image;
+  } else {
+    init   = a || init;
+    update = b || update;
+    img    = c || img;
+  }
+  function Img (v) {
+    if (v[0] === '#'){
+      return new fabric.Image(id(v.substring(1,v.length)))
+    }
+    return new fabric.Image.fromURL(v);
+  }
   var math = jsp.math;
   function proto (obj,name,val) {
     obj.prototype[name] = val;
@@ -8,24 +30,42 @@ var JSprite = function jsp (init,img) {
   }
   var id  = ref => document.getElementById(ref);
   var out = function self () { //constructor function for sprite object
-    this.rawx = 0;
-    this.rawy = 0;
-    this.rawangle = 90;
-    this.img = img || 'tinyplatypus';
-    self.img = this.img;
-    this.raw = new fabric.Image(id(this.img));
+    console.log(img);
+    this.image = img || '#tinyplatypus';
+    self.img = this.img = img;
     this.x = this.y = this.angle = 0;
     self.init.apply(this, arguments);
     self.clones.push(this);
     jsp.frame.add(this.raw);
   };
+  proto(out,'rawx',0);
+  proto(out,'rawy',0);
+  proto(out,'rawangle',90);
+  proto(out,'updatepos',function () {
+    this.goto(this.x,this.y);
+    this.angle = this.angle;
+  });
   prop(out.prototype,'image',{
     get:function () {
       return this.img;
     },
     set:function (val) {
       this.img = val;
-      this.raw = new fabric.Image(id(this.img));
+      if (typeof this.raw !== 'undefined'){
+        jsp.canvas.remove(this.raw);
+        jsp.canvas.remove(this.raw);
+      }
+      this.raw = Img(val);
+      this.raw.set({
+        originX: 'center',
+        originY: 'center',
+        left:    this.raw.getLeft(),
+        top:     this.raw.getTop(),
+        angle:   this.raw.getAngle()
+      });
+      jsp.canvas.add(this.raw);
+      this.updatepos();
+      jsp.render;
     }
   });
   prop(out.prototype,'x',{
@@ -34,8 +74,9 @@ var JSprite = function jsp (init,img) {
     },
     set:function (val) {
       this.rawx = val;
-      var relx = this.raw.width * 0;
-      if(this.raw) this.raw.set('left',jsp.frame.width/2 + (val - relx));
+      if(typeof this.raw !== 'undefined'){
+        this.raw.set('left',jsp.frame.width/2 + val);
+      }
       jsp.render;
     }
   });
@@ -45,8 +86,10 @@ var JSprite = function jsp (init,img) {
     },
     set:function (val) {
       this.rawy = val;
-      var rely = this.raw.height * 0;
-      if(this.raw) this.raw.set('top',jsp.frame.height/2 - (val + rely));
+      var rely = math.cos(90-this.angle) * this.raw.height * 0.5;
+      if(typeof this.raw !== 'undefined'){
+        this.raw.set('top',jsp.frame.height/2 - (val + rely));
+      }
       jsp.render;
     }
   });
@@ -84,7 +127,7 @@ Object.defineProperty(JSprite,'frame',{
 });
 Object.defineProperty(JSprite,'render',{
   get:function () {
-    JSprite.requestRender();
+    JSprite.canvas.renderAll();
   }
 });
 JSprite.pending = false;
@@ -93,7 +136,8 @@ JSprite.requestRender = function () {
   JSprite.pending = setTimeout(function () {
     JSprite.pending = false;
     JSprite.canvas.renderAll();
-  },0);
+    console.log('render');
+  },1);
 };
 JSprite.math = {
   deg:  radians => radians * 180 / Math.PI,
