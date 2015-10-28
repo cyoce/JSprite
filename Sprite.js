@@ -128,6 +128,21 @@ var JSprite = function jsp (a,b,c) {
       this.angle = a;
       return this;
     }
+    if (x === 0){
+      if (y > 0){
+        this.angle = -90;
+      } else {
+        this.angle = 90;
+      }
+    } else if (y === 0){
+      if (x > 0){
+        this.angle = 0;
+      } else {
+        this.angle = 180;
+      }
+    } else {
+      this.angle = math.atan2(y - this.y, x - this.x) + 90;
+    }
     return this;
   });
   proto(out,'add',function () {
@@ -162,5 +177,6 @@ JSprite.math = {
   asin: slope   => JSprite.math.deg(Math.asin(slope)),
   acos: slope   => JSprite.math.deg(Math.acos(slope)),
   atan: slope   => JSprite.math.deg(Math.atan(slope)),
+  atan2: (x,y)  => JSprite.math.deg(Math.atan2(x,y)),
   mod:  (x,y)   => (x + y) % y
 };
