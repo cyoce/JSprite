@@ -7,9 +7,9 @@ var JSprite = function jsp (a,b,c) {
   };
   var img = '';
   if (typeof a === 'object'){
-    if ('init'   in a) init = a.init;
+    if ('init'   in a) init   = a.init;
     if ('update' in a) update = a.update;
-    if ('image'  in a) img = a.image;
+    if ('image'  in a) img    = a.image;
   } else {
     init   = a || init;
     update = b || update;
@@ -30,7 +30,6 @@ var JSprite = function jsp (a,b,c) {
   }
   var id  = ref => document.getElementById(ref);
   var out = function self () { //constructor function for sprite object
-    console.log(img);
     this.image = img || '#tinyplatypus';
     self.img = this.img = img;
     this.x = this.y = this.angle = 0;
@@ -54,6 +53,7 @@ var JSprite = function jsp (a,b,c) {
       if (typeof this.raw !== 'undefined'){
         jsp.canvas.remove(this.raw);
         jsp.canvas.remove(this.raw);
+        this.raw.parent = this;
       }
       this.raw = Img(val);
       this.raw.set({
@@ -61,7 +61,8 @@ var JSprite = function jsp (a,b,c) {
         originY: 'center',
         left:    this.raw.getLeft(),
         top:     this.raw.getTop(),
-        angle:   this.raw.getAngle()
+        angle:   this.raw.getAngle(),
+        selectable: false
       });
       this.add();
       this.updatepos();
@@ -117,18 +118,21 @@ var JSprite = function jsp (a,b,c) {
     return this;
   });
   proto(out,'point',function (a,b){
-    var x,y;
+    var newx,newy,x,y;
     if (typeof a === 'object'){
-      x = a.x;
-      y = a.y;
+      newx = a.x;
+      newy = a.y;
     } else if (typeof b === 'number'){
-      x = a;
-      y = b;
+      newx = a;
+      newy = b;
     } else {
       this.angle = a;
       return this;
     }
-    if (x === 0){
+    x = this.x - newx;
+    y = this.y - newy;
+    if (x === 0 && y === 0);
+    else if (x === 0){
       if (y > 0){
         this.angle = -90;
       } else {
@@ -141,7 +145,7 @@ var JSprite = function jsp (a,b,c) {
         this.angle = 180;
       }
     } else {
-      this.angle = math.atan2(y - this.y, x - this.x) + 90;
+      this.angle = math.atan2(x,y) + 90;
     }
     return this;
   });
@@ -152,7 +156,7 @@ var JSprite = function jsp (a,b,c) {
 }
 Object.defineProperty(JSprite,'frame',{
   get: _ => JSprite.canvas,
-  set: v => JSprite.canvas = new fabric.Canvas(v)
+  set: updateCanvas
 });
 Object.defineProperty(JSprite,'render',{
   get:function () {
@@ -168,6 +172,13 @@ JSprite.requestRender = function () {
     console.log('render');
   },1);
 };
+JSprite.realcoords = function (obj){
+  return {
+    x: obj.x - JSprite.canvas.width  / 2,
+    y: JSprite.canvas.height / 2 - obj.y
+  };
+}
+
 JSprite.math = {
   deg:  radians => radians * 180 / Math.PI,
   rad:  degrees => degrees * Math.PI / 180,
@@ -177,6 +188,39 @@ JSprite.math = {
   asin: slope   => JSprite.math.deg(Math.asin(slope)),
   acos: slope   => JSprite.math.deg(Math.acos(slope)),
   atan: slope   => JSprite.math.deg(Math.atan(slope)),
-  atan2: (x,y)  => JSprite.math.deg(Math.atan2(x,y)),
+  atan2:(x,y)   => JSprite.math.deg(Math.atan2(x,y)),
   mod:  (x,y)   => (x + y) % y
 };
+JSprite.mouse = {
+  x: 0,
+  y: 0,
+  down: false,
+  last: {
+    x: 0,
+    y: 0
+  }
+};
+JSprite.mouse.update = function (e){
+  var coords = JSprite.realcoords(e);
+  JSprite.mouse.lastx = JSprite.mouse.x;
+  JSprite.mouse.lasty = JSprite.mouse.y;
+  JSprite.mouse.x = coords.x - 7;
+  JSprite.mouse.y = coords.y + 26;
+  platy.goto(JSprite.mouse.last);
+  platy.point(Jsprite.mouse);
+};
+function updateCanvas(v){
+  JSprite.canvas = new fabric.Canvas(v);
+  JSprite.canvas.selection = false;
+  JSprite.canvas.on('mouse:down',function (options) {
+    JSprite.mouse.down = true;
+    JSprite.mouse.update(options.e);
+  });
+  JSprite.canvas.on('mouse:up',function (options){
+    JSprite.mouse.down = false;
+    JSprite.mouse.update(options.e);
+  });
+  JSprite.canvas.on('mouse:move',function (options) {
+    JSprite.mouse.update(options.e);
+  });
+}
