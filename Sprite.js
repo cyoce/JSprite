@@ -202,12 +202,12 @@ JSprite.mouse = {
 };
 JSprite.mouse.update = function (e){
   var coords = JSprite.realcoords(e);
-  JSprite.mouse.lastx = JSprite.mouse.x;
-  JSprite.mouse.lasty = JSprite.mouse.y;
+  JSprite.mouse.last.x = JSprite.mouse.x;
+  JSprite.mouse.last.y = JSprite.mouse.y;
   JSprite.mouse.x = coords.x - 7;
   JSprite.mouse.y = coords.y + 26;
   platy.goto(JSprite.mouse.last);
-  platy.point(Jsprite.mouse);
+  platy.point(JSprite.mouse);
 };
 function updateCanvas(v){
   JSprite.canvas = new fabric.Canvas(v);
