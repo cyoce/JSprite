@@ -2,9 +2,7 @@ var JSprite = function jsp (a,b,c) {
   var init = function (x,y){
     this.goto(x,y);
   };
-  var update = function (t){
-
-  };
+  var update;
   var img = '';
   if (typeof a === 'object'){
     if ('init'   in a) init   = a.init;
@@ -30,10 +28,14 @@ var JSprite = function jsp (a,b,c) {
   }
   var id  = ref => document.getElementById(ref);
   var out = function self () { //constructor function for sprite object
+    this.id = jsp.sprites.length;
+    jsp.sprites[this.id] = this;
+    this.update = update;
     this.image = img || '#tinyplatypus';
     self.img = this.img = img;
     this.x = this.y = 0;
     this.angle = 90;
+    this.update = update;
     self.init.apply(this, arguments);
     self.clones.push(this);
     jsp.frame.add(this.raw);
@@ -45,6 +47,15 @@ var JSprite = function jsp (a,b,c) {
     this.goto(this.x,this.y);
     this.angle = this.angle;
   });
+  prop(out.prototype,'update',{
+    get:function () {
+      return this.rawupdate;
+    },
+    set:function (val) {
+      this.rawupdate = val;
+      jsp.updates[this.id] = val;
+    }
+  })
   prop(out.prototype,'image',{
     get:function () {
       return this.img;
@@ -87,9 +98,9 @@ var JSprite = function jsp (a,b,c) {
       return this.rawy;
     },
     set:function (val) {
-      this.rawy = val;
+      this.rawy = Math.round(val * 1e10) / 1e10;
       if(typeof this.raw !== 'undefined'){
-        this.raw.set('top',jsp.frame.height/2 - val);
+        this.raw.set('top',jsp.frame.height/2 - this.rawy);
       }
       jsp.render;
     }
@@ -170,6 +181,34 @@ Object.defineProperty(JSprite,'render',{
     JSprite.canvas.renderAll();
   }
 });
+JSprite.sprites = [];
+JSprite.updates = [];
+JSprite.t = new Date;
+JSprite.oldt = new Date;
+JSprite.rawinterval = 100;
+JSprite.timerid = undefined;
+JSprite.timescale = 0.01;
+Object.defineProperty(JSprite,'interval',{
+  set:function (val) {
+    if (val === 0) return clearInterval(JSprite.timerid);
+    JSprite.rawinterval = val;
+    if (JSprite.timerid !== undefined) clearInterval(this.timerid);
+    JSprite.oldt = new Date;
+    JSprite.t = new Date;
+    JSprite.timerid = setInterval(function (){
+      JSprite.oldt = JSprite.t;
+      JSprite.t = new Date;
+      for(var i = 0; i < JSprite.sprites.length;i++){
+        var update = JSprite.updates[i];
+        var sprite = JSprite.sprites[i];
+        if (update !== undefined){
+          var t = (new Date - JSprite.oldt) * JSprite.timescale;
+          update.call(sprite,t);
+        }
+      }
+    }, val);
+  }
+})
 JSprite.pending = false;
 JSprite.requestRender = function () {
   if(JSprite.pending) clearTimeout(JSprite.pending);
