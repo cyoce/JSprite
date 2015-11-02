@@ -32,7 +32,8 @@ var JSprite = function jsp (a,b,c) {
   var out = function self () { //constructor function for sprite object
     this.image = img || '#tinyplatypus';
     self.img = this.img = img;
-    this.x = this.y = this.angle = 0;
+    this.x = this.y = 0;
+    this.angle = 90;
     self.init.apply(this, arguments);
     self.clones.push(this);
     jsp.frame.add(this.raw);
@@ -99,7 +100,7 @@ var JSprite = function jsp (a,b,c) {
     },
     set: function (val) {
       this.rawangle = math.mod(val,360);
-      this.raw.set('angle',val);
+      this.raw.set('angle',val - 90);
       jsp.render;
     }
   });
@@ -134,19 +135,25 @@ var JSprite = function jsp (a,b,c) {
     if (x === 0 && y === 0);
     else if (x === 0){
       if (y > 0){
-        this.angle = -90;
-      } else {
-        this.angle = 90;
-      }
-    } else if (y === 0){
-      if (x > 0){
         this.angle = 0;
       } else {
         this.angle = 180;
       }
+    } else if (y === 0){
+      if (x > 0){
+        this.angle = 90;
+      } else {
+        this.angle = 270;
+      }
     } else {
-      this.angle = math.atan2(x,y) + 90;
+      this.angle = math.atan2(x,y) + 180;
     }
+    return this;
+  });
+  proto(out,'move',function (steps) {
+    if (typeof steps === 'undefined') steps = 1;
+    this.x += jsp.math.sin(this.angle) * steps;
+    this.y += jsp.math.cos(this.angle) * steps;
     return this;
   });
   proto(out,'add',function () {
@@ -206,8 +213,6 @@ JSprite.mouse.update = function (e){
   JSprite.mouse.last.y = JSprite.mouse.y;
   JSprite.mouse.x = coords.x - 7;
   JSprite.mouse.y = coords.y + 26;
-  platy.goto(JSprite.mouse.last);
-  platy.point(JSprite.mouse);
 };
 function updateCanvas(v){
   JSprite.canvas = new fabric.Canvas(v);
