@@ -183,26 +183,34 @@ Object.defineProperty(JSprite,'render',{
 });
 JSprite.sprites = [];
 JSprite.updates = [];
-JSprite.t = new Date;
-JSprite.oldt = new Date;
-JSprite.rawinterval = 100;
-JSprite.timerid = undefined;
-JSprite.timescale = 0.01;
-Object.defineProperty(JSprite,'interval',{
+JSprite.timer = {
+  t: new Date,
+  oldt: new Date,
+  rawinterval: 0,
+  id: undefined,
+  scale: 0.01,
+  defaultint: 100
+};
+JSprite.start = function () {
+  JSprite.timer.int = JSprite.timer.defaultint;
+}
+JSprite.stop = function () {
+  JSprite.timer.int = 0;
+}
+Object.defineProperty(JSprite.timer,'int',{
   set:function (val) {
-    if (val === 0) return clearInterval(JSprite.timerid);
-    JSprite.rawinterval = val;
-    if (JSprite.timerid !== undefined) clearInterval(this.timerid);
-    JSprite.oldt = new Date;
-    JSprite.t = new Date;
-    JSprite.timerid = setInterval(function (){
-      JSprite.oldt = JSprite.t;
-      JSprite.t = new Date;
+    if (val === 0) return clearInterval(JSprite.timer.id);
+    JSprite.timer.rawinterval = val;
+    if (JSprite.timer.id !== undefined) clearInterval(this.timer.id);
+    JSprite.timer.oldt = JSprite.timer.t = new Date;
+    JSprite.timer.id = setInterval(function (){
+      JSprite.timer.oldt = JSprite.timer.t;
+      JSprite.timer.t = new Date;
       for(var i = 0; i < JSprite.sprites.length;i++){
         var update = JSprite.updates[i];
         var sprite = JSprite.sprites[i];
         if (update !== undefined){
-          var t = (new Date - JSprite.oldt) * JSprite.timescale;
+          var t = (new Date - JSprite.timer.oldt) * JSprite.timer.scale;
           update.call(sprite,t);
         }
       }
