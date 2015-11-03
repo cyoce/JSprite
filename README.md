@@ -42,3 +42,10 @@ The `timer` object can be accessed by using `JSprite.timer`. It has the followin
 * `JSprite.timer.int` -- the interval every sprite's `update` function is called. It is given one argument, `t`, the time (in ms) since the last call.
 * `JSprite.timer.scale` -- the multiplier given to the `t` argument in `update` functions. Defaults to `0.01` (converts ms to seconds).
 The program can start regularly calling the `update` method by using `JSprite.start()`, and it can be ended with `JSprite.stop()`. This can be called at the start of the file, or can be bound to a button.
+
+# Mouse
+The `mouse` object can be accessed via `JSprite.mouse`. It has the following properties:
+* `JSprite.mouse.x` -- x-coordinate of the mouse (bound inside the canvas)
+* `JSprite.mouse.y` -- y-coordinate of the mouse (bound inside the canvas)
+* `JSprite.mouse.last` -- stores last x and y coordinates of the mouse
+* `JSprite.mouse.down` -- boolean, `true` if mouse1 is currently held down, `false` if not.
