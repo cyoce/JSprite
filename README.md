@@ -29,6 +29,7 @@ A sprite can be manipulated with any of its built-in methods. In the sprite cons
 * `sprite.image = string` -- if the string starts with `#`, sets the image to an `<img>` element on the page with id of `string`. Otherwise, it finds an image at the URL of `string`.
 * `sprite.angle` -- the direction the sprite is facing.
 * `sprite.angle = number` -- points the sprite in the specified direction, modulo 360 (negative numbers turn backwards).
+* `sprite1.touching(sprite2)` -- checks if the two sprites are touching. If they are, returns `sprite2`, if not, returns `null`. Note: it checks the image's outline, not the actual image. It doesn't matter if the touching areas have alpha.
 
 # Events
 JSprite supports a few events, mostly related to the mouse
