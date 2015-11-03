@@ -2,7 +2,7 @@
 JSprite is a JavaScript library that gives display functionalities in JavaScript, and allows you to work with Sprite objects that have methods to manipulate them. 
 
 # Setup
-JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the id of the canvas you want to add sprites to.
+JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the `id` of the canvas you want to add sprites to.
 
 # Creating a Sprite
 To create a sprite, use the following:
