@@ -47,6 +47,14 @@ var JSprite = function jsp (a,b,c) {
     this.goto(this.x,this.y);
     this.angle = this.angle;
   });
+  proto(out,'touching',function (obj){
+    this.raw.setCoords();
+    obj .raw.setCoords();
+    if (this.raw.intersectsWithObject(obj.raw)){
+      return obj;
+    }
+    return null;
+  });
   prop(out.prototype,'update',{
     get:function () {
       return this.rawupdate;
