@@ -40,18 +40,28 @@ var JSprite = function jsp (a,b,c) {
     self.clones.push(this);
     jsp.frame.add(this.raw);
   };
+  out.type = 'class';
   proto(out,'rawx',0);
   proto(out,'rawy',0);
   proto(out,'rawangle',90);
+  proto(out,'type','sprite');
   proto(out,'updatepos',function () {
     this.goto(this.x,this.y);
     this.angle = this.angle;
   });
-  proto(out,'touching',function (obj){
-    this.raw.setCoords();
-    obj .raw.setCoords();
-    if (this.raw.intersectsWithObject(obj.raw)){
-      return obj;
+  proto(out,'touching',function (){
+    for (var i in arguments){
+      var objs, s = arguments[i];
+      if (s.type === 'sprite') objs = [s];
+      else objs = s.clones;
+      for (var j in objs){
+        var obj = objs[j];
+        this.raw.setCoords();
+        obj .raw.setCoords();
+        if (obj != this && this.raw.intersectsWithObject(obj.raw)){
+          return obj;
+        }
+      }
     }
     return null;
   });
