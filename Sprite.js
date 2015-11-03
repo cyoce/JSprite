@@ -261,18 +261,33 @@ JSprite.mouse.update = function (e){
   JSprite.mouse.x = coords.x - 7;
   JSprite.mouse.y = coords.y + 26;
 };
+JSprite.forAll = function (proper, action) {
+  for(var i in JSprite.sprites){
+    var sprite = JSprite.sprites[i];
+    if (typeof sprite[proper] !== 'undefined'){
+      action(sprite,sprite[proper]);
+    }
+  }
+}
 function updateCanvas(v){
   JSprite.canvas = new fabric.Canvas(v);
   JSprite.canvas.selection = false;
   JSprite.canvas.on('mouse:down',function (options) {
     JSprite.mouse.down = true;
-    JSprite.mouse.update(options.e);
+    JSprite.forAll('onmousedown',function (sprite, callback) {
+      callback.call(sprite,JSprite.mouse);
+    });
   });
   JSprite.canvas.on('mouse:up',function (options){
     JSprite.mouse.down = false;
-    JSprite.mouse.update(options.e);
+    JSprite.forAll('onmouseup',function (sprite,callback) {
+      callback.call(sprite,JSprite.mouse);
+    });
   });
   JSprite.canvas.on('mouse:move',function (options) {
     JSprite.mouse.update(options.e);
+    JSprite.forAll('onmousemove',function (sprite, callback) {
+      callback.call(sprite,JSprite.mouse);
+    });
   });
 }
