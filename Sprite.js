@@ -47,6 +47,9 @@ var JSprite = function jsp (a,b,c) {
   proto(out,'type','sprite');
   proto(out,'keydown',{});
   proto(out,'keyup',  {});
+  proto(out,'turn', function (deg) {
+    this.angle += deg;
+  });
   proto(out,'updatepos',function () {
     this.goto(this.x,this.y);
     this.angle = this.angle;
