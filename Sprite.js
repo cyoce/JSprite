@@ -201,7 +201,7 @@ Object.defineProperty(JSprite.timer,'int',{
   set:function (val) {
     if (val === 0) return clearInterval(JSprite.timer.id);
     JSprite.timer.rawinterval = val;
-    if (JSprite.timer.id !== undefined) clearInterval(this.timer.id);
+    if (JSprite.timer.id !== undefined) clearInterval(JSprite.timer.id);
     JSprite.timer.oldt = JSprite.timer.t = new Date;
     JSprite.timer.id = setInterval(function (){
       JSprite.timer.oldt = JSprite.timer.t;
