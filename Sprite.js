@@ -45,6 +45,8 @@ var JSprite = function jsp (a,b,c) {
   proto(out,'rawy',0);
   proto(out,'rawangle',90);
   proto(out,'type','sprite');
+  proto(out,'keydown',{});
+  proto(out,'keyup',  {});
   proto(out,'updatepos',function () {
     this.goto(this.x,this.y);
     this.angle = this.angle;
@@ -219,7 +221,7 @@ Object.defineProperty(JSprite.timer,'int',{
   set:function (val) {
     if (val === 0) return clearInterval(JSprite.timer.id);
     JSprite.timer.rawinterval = val;
-    if (JSprite.timer.id !== undefined) clearInterval(this.timer.id);
+    if (JSprite.timer.id !== undefined) clearInterval(JSprite.timer.id);
     JSprite.timer.oldt = JSprite.timer.t = new Date;
     JSprite.timer.id = setInterval(function (){
       JSprite.timer.oldt = JSprite.timer.t;
@@ -287,9 +289,70 @@ JSprite.forAll = function (proper, action) {
     }
   }
 }
+JSprite.key = {
+  down: function (k) {
+    k = JSprite.key.get(k.keyCode);
+    if (JSprite.key.pressed(k));
+    else {
+      JSprite.key.rawpressed[k] = true;
+      JSprite.forAll('onkeydown',function (sprite,callback) {
+        callback.call(sprite,k);
+      });
+      JSprite.forAll('keydown',function (sprite, callback) {
+        if (k in callback) callback[k].call(sprite);
+      });
+    }
+  },
+  up: function (k) {
+    k = JSprite.key.get(k.keyCode);
+    JSprite.key.rawpressed[k] = false;
+    JSprite.forAll('onkeyup', function (sprite,callback) {
+      callback.call(sprite,k);
+    });
+    JSprite.forAll('keyup', function (sprite, callback) {
+      if (k in callback) callback[k].call(sprite);
+    });
+  },
+  get: function (k) {
+    if ('_' + k in JSprite.key.pairs) return JSprite.key.pairs['_' + k];
+    return String.fromCharCode(k).toLowerCase();
+  },
+  pairs: {
+    _9:  'tab',
+    _13: 'enter',
+    _16: 'shift',
+    _17: 'ctrl',
+    _18: 'alt',
+    _37: 'left',
+    _38: 'up',
+    _39: 'right',
+    _40: 'down',
+    _91: 'cmd',
+    _192: "~",
+    _189: "-",
+    _187: "=",
+    _219: "[",
+    _221: "]",
+    _220: "\\",
+    _186: ";",
+    _222: "'",
+    _188: ",",
+    _190: ".",
+    _191: "/"
+  },
+  rawpressed: {},
+  pressed: function (k) {
+    if (k in JSprite.key.rawpressed);
+    else JSprite.key.rawpressed[k] = false;
+    return JSprite.key.rawpressed[k];
+  },
+};
 function updateCanvas(v){
   JSprite.canvas = new fabric.Canvas(v);
   JSprite.canvas.selection = false;
+  JSprite.rawcanvas = document.getElementById(v);
+  document.onkeydown = JSprite.key.down;
+  document.onkeyup   = JSprite.key.up;
   JSprite.canvas.on('mouse:down',function (options) {
     JSprite.mouse.down = true;
     JSprite.forAll('onmousedown',function (sprite, callback) {

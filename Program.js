@@ -6,6 +6,18 @@ var Platypus = JSprite({
     this .onmousedown = function (pos) {
       console.log([pos.x,pos.y]);
     }
+    this .onkeydown = function (key) {
+    //  console.log(key, 'down');
+    }
+    this .onkeyup = function (key) {
+    //  console.log(key, 'up');
+    };
+    this.keydown[' '] = function () {
+      this.update = this.move;
+    };
+    this.keyup  [' '] = function () {
+      this.update = undefined;
+    }
   },
   image: '#platypus'
 });
