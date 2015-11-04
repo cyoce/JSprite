@@ -42,7 +42,11 @@ JSprite supports a few events, mostly related to the mouse
 * `sprite.onmousedown` -- function that is fired when the mouse is clicked anywhere
 * `sprite.onmouseup` -- function that is called when mouse is released 
 * `sprite.onmousemove` -- function that is called when the mouse is moved
+* `sprite.onkeydown` -- called initially when a key is pressed, passed the key as a string
+* `sprite.onkeydup` -- called when key is released, passed the key as a string
 * `sprite.update` -- function that is called every `JSprite.timer.int` ms when program is in `running` state
+
+To call a function when `key` is pressed/released, use `sprite.keydown[key] = function(){}` or `sprite.keyup[key] = function(){}`.
 
 # Timer
 The `timer` object can be accessed by using `JSprite.timer`. It has the following properties:
