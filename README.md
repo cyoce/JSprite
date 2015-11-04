@@ -2,6 +2,12 @@
 JSprite is a JavaScript library that gives display functionalities in JavaScript, and allows you to work with Sprite objects that have methods to manipulate them. 
 
 # Setup
+To start programming with JSprite, you first need to import `fabric.js` (what JSprite uses), and the actual `JSprite` library.
+```html
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'></script>
+<script type='text/javascript' src='https://rawgit.com/cyoce/JSprite/master/Sprite.js'></script>
+```
+
 JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the `id` of the canvas you want to add sprites to.
 
 # Creating a Sprite
