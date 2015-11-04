@@ -60,3 +60,7 @@ The `mouse` object can be accessed via `JSprite.mouse`. It has the following pro
 * `JSprite.mouse.y` -- y-coordinate of the mouse (bound inside the canvas)
 * `JSprite.mouse.last` -- stores last x and y coordinates of the mouse
 * `JSprite.mouse.down` -- boolean, `true` if mouse1 is currently held down, `false` if not.
+
+# Keys
+The `key` object can be accessed via `JSprite.key`. It has the following properties:
+* `JSprite.key.pressed(key)` -- returns `true` if `key` is currently held down, `false` if not.
