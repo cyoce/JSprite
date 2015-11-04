@@ -26,7 +26,8 @@ A sprite can be manipulated with any of its built-in methods. In the sprite cons
 # Sprite methods
 * `sprite.goto(x,y)` -- set the sprite's coordinates to `(x,y)`, with `(0,0)` at the center of the canvas.
 * `sprite.move(steps)` -- move the sprite forward `steps` pixels, in the direction of its angle
-* `sprite.point(a[,b])` -- if `a` is an object, point towards the object's X and Y coordinates. If `a` is a number and `b` is a number, point towards `(a,b)`. If `a` is a number and `b` is not specified, point in direction `a`.
+* `sprite.point(a[,b])` -- if `a` is an object, point towards the object's X and Y coordinates. If `a` is a number and `b` is a number, point towards `(a,b)`. If `a` is a number and `b` is not specified, point in direction `a
+* `sprite.turn(steps)` -- increase the sprite's angle by `steps` degrees.
 
 # Sprite properties
 * `sprite.x` -- the sprite's x-coordinate
