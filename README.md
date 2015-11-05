@@ -7,6 +7,7 @@ To start programming with JSprite, you first need to import `fabric.js` (what JS
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'></script>
 <script type='text/javascript' src='https://rawgit.com/cyoce/JSprite/master/Sprite.js'></script>
 ```
+Alternatively, you can just copy the `template.html` file, found [here](https://github.com/cyoce/JSprite/blob/master/template.html).
 
 JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the `id` of the canvas you want to add sprites to.
 
