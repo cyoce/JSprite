@@ -7,6 +7,7 @@ To start programming with JSprite, you first need to import `fabric.js` (what JS
 <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.5.0/fabric.min.js'></script>
 <script type='text/javascript' src='https://rawgit.com/cyoce/JSprite/master/Sprite.js'></script>
 ```
+Alternatively, you can just copy the `template.html` file, found [here](https://github.com/cyoce/JSprite/blob/master/template.html).
 
 JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the `id` of the canvas you want to add sprites to.
 
@@ -26,7 +27,8 @@ A sprite can be manipulated with any of its built-in methods. In the sprite cons
 # Sprite methods
 * `sprite.goto(x,y)` -- set the sprite's coordinates to `(x,y)`, with `(0,0)` at the center of the canvas.
 * `sprite.move(steps)` -- move the sprite forward `steps` pixels, in the direction of its angle
-* `sprite.point(a[,b])` -- if `a` is an object, point towards the object's X and Y coordinates. If `a` is a number and `b` is a number, point towards `(a,b)`. If `a` is a number and `b` is not specified, point in direction `a`.
+* `sprite.point(a[,b])` -- if `a` is an object, point towards the object's X and Y coordinates. If `a` is a number and `b` is a number, point towards `(a,b)`. If `a` is a number and `b` is not specified, point in direction `a
+* `sprite.turn(steps)` -- increase the sprite's angle by `steps` degrees.
 
 # Sprite properties
 * `sprite.x` -- the sprite's x-coordinate
