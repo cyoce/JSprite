@@ -120,7 +120,7 @@ var JSprite = function jsp (a,b,c) {
   out.clones = [];
   proto(out,'goto',function (a,b) {
     var x,y;
-    if(typeof a.x !== 'undefined'){
+    if('x' in a){
       x = a.x, y = a.y;
     } else {
       x = a, y = b;
