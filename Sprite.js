@@ -45,8 +45,13 @@ var JSprite = function jsp (a,b,c) {
   proto(out,'rawy',0);
   proto(out,'rawangle',90);
   proto(out,'type','sprite');
+  proto(out,'speed', 1);
   proto(out,'keydown',{});
   proto(out,'keyup',  {});
+  proto(out,'last',{
+    x: 0,
+    y: 0
+  });
   proto(out,'turn', function (deg) {
     this.angle += deg;
   });
@@ -69,6 +74,12 @@ var JSprite = function jsp (a,b,c) {
       }
     }
     return null;
+  });
+  proto(out, 'rel', function (obj) {
+    return {
+      x: obj.x - this.x,
+      y: obj.y - this.y
+    };
   });
   prop(out.prototype,'update',{
     get:function () {
@@ -109,6 +120,7 @@ var JSprite = function jsp (a,b,c) {
       return this.rawx;
     },
     set:function (val) {
+      this.last.x = this.x;
       this.rawx = val;
       if(typeof this.raw !== 'undefined'){
         this.raw.set('left',jsp.frame.width/2 + val);
@@ -121,7 +133,8 @@ var JSprite = function jsp (a,b,c) {
       return this.rawy;
     },
     set:function (val) {
-      this.rawy = Math.round(val * 1e10) / 1e10;
+      this.last.y = this.y;
+      this.rawy = val;
       if(typeof this.raw !== 'undefined'){
         this.raw.set('top',jsp.frame.height/2 - this.rawy);
       }
@@ -213,7 +226,7 @@ JSprite.timer = {
   rawinterval: 0,
   id: undefined,
   scale: 0.01,
-  defaultint: 100
+  defaultint: 10
 };
 JSprite.start = function () {
   JSprite.timer.int = JSprite.timer.defaultint;
@@ -235,7 +248,7 @@ Object.defineProperty(JSprite.timer,'int',{
         var sprite = JSprite.sprites[i];
         if (update !== undefined){
           var t = (new Date - JSprite.timer.oldt) * JSprite.timer.scale;
-          update.call(sprite,t);
+          update.call(sprite,t * sprite.speed);
         }
       }
     }, val);
@@ -331,7 +344,7 @@ JSprite.key = {
     _38: 'up',
     _39: 'right',
     _40: 'down',
-    _91: 'cmd',
+    _91: 'meta',
     _192: "~",
     _189: "-",
     _187: "=",
@@ -386,3 +399,32 @@ function updateCanvas(v){
     });
   });
 }
+JSprite.path = {};
+JSprite.path.gravity = function(start, vel, pull, turn) {
+  if(typeof turn === 'undefined') turn = false;
+  start = {
+    x: start.x,
+    y: start.y,
+  };
+  start.t = new Date;
+  vel = {
+    x: vel.x,
+    y: vel.y
+  };
+  function ret() {
+    var t = (new Date - start.t);
+    t *= JSprite.timer.scale;
+    var out = {};
+    out.x = start.x;
+    out.x += vel.x * t;
+    out.y = start.y;
+    out.y += (vel.y * t) - (pull * t) * ((t - 1) / 2)
+    this.goto(out);
+    if (turn) {
+      this.point(this.last);
+      this.turn(180);
+    }
+    return out;
+  }
+  return ret;
+};
