@@ -3,20 +3,11 @@ var Platypus = JSprite({
   init:function (name,x,y) {
     this.goto(x || 0, y || 0)
     this.name = name;
-    this .onmousedown = function (pos) {
-      console.log([pos.x,pos.y]);
-    }
-    this .onkeydown = function (key) {
-    //  console.log(key, 'down');
-    }
-    this .onkeyup = function (key) {
-    //  console.log(key, 'up');
-    };
     this.keydown[' '] = function () {
-      this.update = this.move;
+      if(this.id === 0) this.update = this.move;
     };
     this.keyup  [' '] = function () {
-      this.update = undefined;
+      if(this.id === 0) this.update = this.turn;
     }
   },
   image: '#platypus'
