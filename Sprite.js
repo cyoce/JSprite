@@ -182,13 +182,13 @@ var JSprite = function jsp (a,b,c) {
     y = this.y - newy;
     if (x === 0 && y === 0);
     else if (x === 0){
-      if (y > 0){
+      if (y < 0){
         this.angle = 0;
       } else {
         this.angle = 180;
       }
     } else if (y === 0){
-      if (x > 0){
+      if (x < 0){
         this.angle = 90;
       } else {
         this.angle = 270;
