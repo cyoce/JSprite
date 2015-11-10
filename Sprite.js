@@ -1,3 +1,4 @@
+"use strict";
 var JSprite = function jsp (a,b,c) {
   var init = function (x,y){
     this.goto(x,y);
@@ -82,19 +83,19 @@ var JSprite = function jsp (a,b,c) {
     };
   });
   prop(out.prototype,'update',{
-    get:function () {
+    get () {
       return this.rawupdate;
     },
-    set:function (val) {
+    set (val) {
       this.rawupdate = val;
       jsp.updates[this.id] = val;
     }
   })
   prop(out.prototype,'image',{
-    get:function () {
+    get () {
       return this.img;
     },
-    set:function (val) {
+    set (val) {
       this.img = val;
       if (typeof this.raw !== 'undefined'){
         jsp.canvas.remove(this.raw);
@@ -116,10 +117,10 @@ var JSprite = function jsp (a,b,c) {
     }
   });
   prop(out.prototype,'x',{
-    get:function () {
+    get () {
       return this.rawx;
     },
-    set:function (val) {
+    set (val) {
       this.last.x = this.x;
       this.rawx = val;
       if(typeof this.raw !== 'undefined'){
@@ -129,10 +130,10 @@ var JSprite = function jsp (a,b,c) {
     }
   });
   prop(out.prototype,'y',{
-    get:function () {
+    get () {
       return this.rawy;
     },
-    set:function (val) {
+    set (val) {
       this.last.y = this.y;
       this.rawy = val;
       if(typeof this.raw !== 'undefined'){
@@ -142,13 +143,22 @@ var JSprite = function jsp (a,b,c) {
     }
   });
   prop(out.prototype,'angle',{
-    get:function () {
+    get () {
       return this.rawangle;
     },
-    set: function (val) {
+    set (val) {
       this.rawangle = math.mod(val,360);
       this.raw.set('angle',val - 90);
       jsp.render;
+    }
+  });
+  prop(out.prototype,'alpha',{
+    get () {
+      return this.rawalpha;
+    },
+    set (val) {
+      this.raw.set('opacity', val / 100);
+      this.rawalpha = val;
     }
   });
   out.init   = init;
@@ -214,7 +224,7 @@ Object.defineProperty(JSprite,'frame',{
   set: updateCanvas
 });
 Object.defineProperty(JSprite,'render',{
-  get:function () {
+  get () {
     JSprite.canvas.renderAll();
   }
 });
@@ -235,7 +245,7 @@ JSprite.stop = function () {
   JSprite.timer.int = 0;
 }
 Object.defineProperty(JSprite.timer,'int',{
-  set:function (val) {
+  set (val) {
     if (val === 0) return clearInterval(JSprite.timer.id);
     JSprite.timer.rawinterval = val;
     if (JSprite.timer.id !== undefined) clearInterval(JSprite.timer.id);
@@ -307,7 +317,7 @@ JSprite.forAll = function (proper, action) {
   }
 }
 JSprite.key = {
-  down: function (k) {
+  down (k) {
     k = JSprite.key.get(k.keyCode);
     if (JSprite.key.pressed(k));
     else {
@@ -320,7 +330,7 @@ JSprite.key = {
       });
     }
   },
-  up: function (k) {
+  up (k) {
     k = JSprite.key.get(k.keyCode);
     JSprite.key.rawpressed[k] = false;
     JSprite.forAll('onkeyup', function (sprite,callback) {
@@ -330,45 +340,45 @@ JSprite.key = {
       if (k in callback) callback[k].call(sprite);
     });
   },
-  get: function (k) {
-    if ('_' + k in JSprite.key.pairs) return JSprite.key.pairs['_' + k];
+  get (k) {
+    if (k in JSprite.key.pairs) return JSprite.key.pairs[k];
     return String.fromCharCode(k).toLowerCase();
   },
   pairs: {
-    _9:  'tab',
-    _13: 'enter',
-    _16: 'shift',
-    _17: 'ctrl',
-    _18: 'alt',
-    _37: 'left',
-    _38: 'up',
-    _39: 'right',
-    _40: 'down',
-    _91: 'meta',
-    _192: "~",
-    _189: "-",
-    _187: "=",
-    _219: "[",
-    _221: "]",
-    _220: "\\",
-    _186: ";",
-    _222: "'",
-    _188: ",",
-    _190: ".",
-    _191: "/",
-    _112: 'f1',
-    _113: 'f2',
-    _114: 'f3',
-    _115: 'f4',
-    _116: 'f5',
-    _117: 'f6',
-    _118: 'f7',
-    _119: 'f8',
-    _120: 'f9',
-    _121: 'f10'
+    [9]:  'tab',
+    [13]: 'enter',
+    [16]: 'shift',
+    [17]: 'ctrl',
+    [18]: 'alt',
+    [37]: 'left',
+    [38]: 'up',
+    [39]: 'right',
+    [40]: 'down',
+    [91]: 'meta',
+    [192]: "~",
+    [189]: "-",
+    [187]: "=",
+    [219]: "[",
+    [221]: "]",
+    [220]: "\\",
+    [186]: ";",
+    [222]: "'",
+    [188]: ",",
+    [190]: ".",
+    [191]: "/",
+    [112]: 'f1',
+    [113]: 'f2',
+    [114]: 'f3',
+    [115]: 'f4',
+    [116]: 'f5',
+    [117]: 'f6',
+    [118]: 'f7',
+    [119]: 'f8',
+    [120]: 'f9',
+    [121]: 'f10'
   },
   rawpressed: {},
-  pressed: function (k) {
+  pressed (k) {
     if (k in JSprite.key.rawpressed);
     else JSprite.key.rawpressed[k] = false;
     return JSprite.key.rawpressed[k];
@@ -414,10 +424,11 @@ JSprite.path.gravity = function(start, vel, pull, turn) {
   function ret() {
     var t = (new Date - start.t);
     t *= JSprite.timer.scale;
-    var out = {};
-    out.x = start.x;
+    var out = {
+      x: start.x,
+      y: start.y
+    };
     out.x += vel.x * t;
-    out.y = start.y;
     out.y += (vel.y * t) - (pull * t) * ((t - 1) / 2)
     this.goto(out);
     if (turn) {

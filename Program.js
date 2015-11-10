@@ -19,7 +19,7 @@ platy.onmouseup = function () {
 cyoce.image = '#tinyplatypus';
 cyoce.angle += 20;
 cyoce.speed = 10;
-cyoce.update = function (t ) {
+cyoce.update = function (t) {
   if (JSprite.key.pressed('up')) this.move(t);
   if (JSprite.key.pressed('down')) this.move(-t);
   if (JSprite.key.pressed('right')) this.turn(t);
