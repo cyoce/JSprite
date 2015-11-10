@@ -11,15 +11,22 @@ Alternatively, you can just copy the `template.html` file, found [here](https://
 
 JSprite will automatically add defined sprites to the selected canvas. To select a canvas, use `JSprite.frame = canvas`, where `canvas` is the `id` of the canvas you want to add sprites to.
 
-# Creating a Sprite
-To create a sprite, use the following:
+## Creating a Sprite Class
+To create a sprite constructor, use the following:
 ```Javascript
 var Sprite = JSprite(function (name){
   this.name = name;
   console.log(name);
 });
 ```
-This will create a Sprite constructor. To then create a sprite, use `var sprite1 = new Sprite('platypus');`. This will create a sprite, and set its name attribute to `"platypus"`, and `log` it to the console. 
+This will create a Sprite constructor. The sprite constructor is what you will use to create sprites of that type.
+
+## Creating a Sprite
+Once you have your sprite constructor, you probably want to then make sprites as well. This is done with the `new` keyword, used on the value you stored as the sprite constructor.
+```javascript
+var player = new Sprite('username');
+```
+Note: when a sprite is created, it will be automatically added to the screen.
 
 # Manipulating a Sprite
 A sprite can be manipulated with any of its built-in methods. In the sprite constructor, or any of the sprite's event callbacks, it can be referred to using the `this` keyword, e.g. `this.goto(100,100)`. In the global context or from another sprite, you can refer to it by a variable it is stored in, e.g. `sprite1.goto(100,100)`. 
